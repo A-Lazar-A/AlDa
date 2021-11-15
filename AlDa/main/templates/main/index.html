@@ -18,14 +18,16 @@
 
 <body>
 <div class="py-3">
+
     <div class="table-responsive">
         <table class="table table-bordered border-dark">
-            <thead class="align-middle text-center">
+            <thead class="align-middle text-center table-info border-dark">
 
             <tr>
                 <th colspan="2">Данне по номенклатуре</th>
                 <th colspan="3">Бюджет</th>
                 <th rowspan="2">Контрагент</th>
+                <th colspan="4">Данные по договорам</th>
             </tr>
             <tr>
                 <th>Номенклатруа</th>
@@ -33,6 +35,10 @@
                 <th>Кол-во</th>
                 <th>Цена ед. руб. без НДС</th>
                 <th>Сумма без НДС, руб.</th>
+                <th>Дата закл. контракта</th>
+                <th>Ответсвенный</th>
+                <th>Кол-во</th>
+                <th>Цена за еденицу</th>
             </tr>
             </thead>
             <tbody>
@@ -43,41 +49,109 @@
                 <th><a data-bs-toggle="collapse" href="#collapseProject{{el.id}}" role="button" aria-expanded="false"
                        aria-controls="collapseProject{{el.id}}">{{el.Name}}</a></th>
                 <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
             {% for j in el.Jobs.all %}
             <tr class="collapse table-primary border-dark" id="collapseProject{{el.id}}">
                 <th><a data-bs-toggle="collapse" href="#collapseJob{{j.id}}" role="button" aria-expanded="false"
                        aria-controls="collapseJob{{j.id}}">{{j.Name}}</a></th>
                 <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+
             </tr>
             {% for sj in j.CategoryOfWork.all %}
             <tr class="collapse border-dark" id="collapseJob{{j.id}}">
-                <th >{{sj.Name}}</th>
+                <th>{{sj.Name}}</th>
                 <th>ед.изм.</th>
                 <th>{{sj.Quantity }}</th>
                 <th>{{sj.CostForOne }}</th>
                 <th>{{sj.Multyplay }}</th>
-                <th> <a data-bs-toggle="collapse" href="#collapseSJob{{sj.id}}" role="button" aria-expanded="false"
-                       aria-controls="collapseSJob{{sj.id}}">{{sj.CounterPartyes.count }}</a></th>
-            </tr>
-            {% for agent in sj.CounterPartyes %}
-                <tr class="collapse border-dark" id="collapseSJob{{sj.id}}">
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>{{agent.Name}}</th>
-                </tr>
-            {% endfor %}
+
+                <th>
+                    <a class="btn btn-primary" href="{% url 'agents' sj.id %}"  role="button"
+                       >{{sj.CounterPartyes.count }}</a></th>
+
+                {% if sj.Expired %}
+                <th class="blink{{sj.id}}">{{sj.DateOfContract}}</th>
+                <style>
+                    @-webkit-keyframes blink{{sj.id}} {
+  from { background-color: red; }
+  to { background-color: inherit; }
+}
+@-moz-keyframes blink{{sj.id}} {
+  from { background-color: red; }
+  to { background-color: inherit; }
+}
+@-o-keyframes blink{{sj.id}} {
+  from { background-color: red; }
+  to { background-color: inherit; }
+}
+@keyframes blink{{sj.id}} {
+  from { background-color: red; }
+  to { background-color: inherit; }
+}
+.blink{{sj.id}} {
+  -webkit-animation: blink{{sj.id}} 1s infinite; /* Safari 4+ */
+  -moz-animation:    blink{{sj.id}} 1s infinite; /* Fx 5+ */
+  -o-animation:      blink{{sj.id}} 1s infinite; /* Opera 12+ */
+  animation:         blink{{sj.id}} 1s infinite; /* IE 10+ */
+}
+                </style>
+                {% elif sj.OneWeekExpired %}
+                <th class="blink{{sj.id}}">{{sj.DateOfContract}}</th>
+                <style>
+                    @-webkit-keyframes blink{{sj.id}} {
+  from { background-color: yellow; }
+  to { background-color: inherit; }
+}
+@-moz-keyframes blink{{sj.id}} {
+  from { background-color: yellow; }
+  to { background-color: inherit; }
+}
+@-o-keyframes blink{{sj.id}} {
+  from { background-color: yellow; }
+  to { background-color: inherit; }
+}
+@keyframes blink{{sj.id}} {
+  from { background-color: yellow; }
+  to { background-color: inherit; }
+}
+.blink{{sj.id}} {
+  -webkit-animation: blink{{sj.id}} 1s infinite; /* Safari 4+ */
+  -moz-animation:    blink{{sj.id}} 1s infinite; /* Fx 5+ */
+  -o-animation:      blink{{sj.id}} 1s infinite; /* Opera 12+ */
+  animation:         blink{{sj.id}} 1s infinite; /* IE 10+ */
+}
+                </style>
+
+                {% else %}
+                <th>{{sj.DateOfContract}}</th>
+                {% endif %}
+                <th></th>
+                {% if sj.SumValue.Value__sum == None  %}
+                <th></th>
+                {% else %}
+                <th>
+                    {{ sj.SumValue.Value__sum }}
+                </th>
+                {% endif %}
+                <th></th>
+
+
             {% endfor %}
             {% endfor %}
             {% endfor %}

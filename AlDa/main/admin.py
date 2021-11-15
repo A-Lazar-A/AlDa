@@ -8,7 +8,10 @@ class PassportOfObjectAdmin(admin.ModelAdmin):
 
 
 class CounterPartyAdmin(admin.ModelAdmin):
-    list_display = ('Name', 'Value')
+
+    change_form_template = 'main/admin.html'
+
+    list_display = ('Name', 'Value', 'Hired')
     filter_horizontal = ('Accreditation',)
 
 
